@@ -1,0 +1,101 @@
+@model MipWeb.Models.StudentEnrollmentViewModel
+@{
+    ViewData["Title"] = "Student Enrollment";
+}
+
+<h2>Student Enrollment</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (ViewBag.EnrollmentError != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.EnrollmentError
+    </div>
+}
+
+<form asp-action="Index" enctype="multipart/form-data" method="post">
+    <!-- Validation summary here -->
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Nationality" class="form-label"></label>
+            <input asp-for="Nationality" class="form-control" />
+            <span asp-validation-for="Nationality" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Gender" class="form-label"></label>
+            <select asp-for="Gender" class="form-select">
+                <option value="">Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="PreferredLanguage" class="form-label"></label>
+            <select asp-for="PreferredLanguage" class="form-select">
+                <option>English</option>
+                <option>Tamil</option>
+            </select>
+            <span asp-validation-for="PreferredLanguage" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Phone" class="form-label"></label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Age" class="form-label"></label>
+            <select asp-for="Age" class="form-select">
+                <option value="">Select</option>
+                @for (int i = 5; i <= 70; i++)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="AadhaarFile" class="form-label"></label>
+            <input asp-for="AadhaarFile" class="form-control" type="file" />
+            <span asp-validation-for="AadhaarFile" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="PhotoFile" class="form-label"></label>
+            <input asp-for="PhotoFile" class="form-control" type="file" />
+            <span asp-validation-for="PhotoFile" class="text-danger"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Captcha: @Model.CaptchaQuestion</label>
+            <input asp-for="CaptchaAnswer" class="form-control" />
+            <span asp-validation-for="CaptchaAnswer" class="text-danger"></span>
+        </div>
+
+        <div class="col-12 mt-3">
+            <button type="submit" class="btn btn-success">Submit Enrollment</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

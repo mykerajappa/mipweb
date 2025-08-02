@@ -1,0 +1,84 @@
+@model List<Student>
+@using Microsoft.AspNetCore.Http
+
+<h2>Pending Approvals</h2>
+
+
+@if (!Model.Any())
+{
+    <div class="alert alert-success text-center">
+        All pending requests approved.
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th><th>Phone</th><th>Gender</th><th>Age</th><th>Aadhar</th><th>Photo</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var s in Model)
+    {
+        <tr>
+            <td>@s.Name</td>
+            <td>@s.Phone</td>
+            <td>@s.Gender</td>
+            <td>@s.Age</td>
+            <td>
+                <a href="@Url.Content($"~{s.AadhaarFilePath}")" target="_blank">
+                    <i class="bi bi-file-earmark-image"></i>
+                </a>
+            </td>
+            <td>
+                <a href="@Url.Content($"~{s.PhotoFilePath}")" target="_blank">
+                    <i class="bi bi-person-circle"></i>
+                </a>
+            </td>
+            <td>
+                <form asp-action="UpdateJoinDate" method="post" class="d-flex">
+                    <input type="hidden" name="id" value="@s.Id" />
+                    <input type="date" name="joinDate" value="@s.JoinDate?.ToString("yyyy-MM-dd")" class="form-control form-control-sm me-2" required />
+                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                </form>
+            </td>
+            <td>
+                <form asp-action="ApproveStudent" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@s.Id" />
+                    <button class="btn btn-success btn-sm">Approve</button>
+                </form>
+
+                <button class="btn btn-danger btn-sm" onclick="showReject(@s.Id)">Reject</button>
+            </td>
+        </tr>
+    }
+        </tbody>
+    </table>
+
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <form asp-action="RejectStudent" method="post" class="modal-content">
+                <div class="modal-header"><h5>Reject Student</h5></div>
+                <div class="modal-body">
+                    <input type="hidden" id="rejectId" name="id" />
+                    <label>Reason:</label>
+                    <textarea name="reason" class="form-control" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+@section Scripts {
+<script>
+    function showReject(id) {
+        document.getElementById('rejectId').value = id;
+        var modal = new bootstrap.Modal(document.getElementById('rejectModal'));
+        modal.show();
+    }
+</script>
+}

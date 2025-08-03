@@ -43,21 +43,33 @@ public class EnrollmentController : Controller
             model.CaptchaQuestion = GenerateCaptcha(HttpContext);
             return View(model);
         }
+        
+        // ✅ Check OTP verification backend
+        var recentOtp = await _context.OtpVerifications
+            .Where(x => x.PhoneNumber == model.Phone && x.IsVerified)
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefaultAsync();
+
+        if (recentOtp == null || recentOtp.ExpiresAt < DateTime.UtcNow)
+        {
+            ModelState.AddModelError("PhoneNumber", "Phone number has not been verified. Please verify via OTP.");
+            return View(model);
+        }
 
         // Check for existing student
-        var duplicate = await _context.Students.FirstOrDefaultAsync(s =>
+        bool alreadyExists = await _context.Students.AnyAsync(s =>
             s.Phone == model.Phone &&
             s.Name.ToLower() == model.Name.ToLower().Trim() &&
             s.Gender == model.Gender &&
             s.Age == model.Age
         );
 
-        if (duplicate != null)
+        if (alreadyExists)
         {
             ModelState.AddModelError("", "You have already enrolled. Please wait for approval.");
             return View(model);
         }
-        
+
         try
         {
 
@@ -77,11 +89,13 @@ public class EnrollmentController : Controller
                 AadhaarFilePath = aadhaarPath,
                 PhotoFilePath = photoPath,
                 EnrollmentDate = DateTime.Now,
-                IsWhatsAppVerified = false,
+                IsWhatsAppVerified = true,
                 IsApproved = false
             };
 
             _context.Students.Add(student);
+            _context.OtpVerifications.Remove(recentOtp);
+
             await _context.SaveChangesAsync();
 
             TempData["Success"] = "Enrollment submitted successfully. Awaiting admin approval.";

@@ -1,12 +1,17 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using MipWeb.Data;
 using MipWeb.Models;
+using MipWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+object value = builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+});
 
 // Use session
 builder.Services.AddSession();
@@ -45,6 +50,12 @@ builder.Services.Configure<AuthorizationOptions>(options =>
         .Build();
 });
 
+builder.Services.AddHttpClient();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<WhatsAppService>(); 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -60,6 +71,11 @@ app.UseStaticFiles();
 
 app.UseSession();
 app.UseCookiePolicy();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 
 app.UseRouting();
 
@@ -90,6 +106,12 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("✅ Default admin user created: username='admin', password='admin123'");
     }
 }
+
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"Incoming request: {context.Request.Path}");
+    await next();
+});
 
 app.Run();
 

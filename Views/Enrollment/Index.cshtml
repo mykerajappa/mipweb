@@ -16,7 +16,7 @@
     </div>
 }
 
-<form asp-action="Index" enctype="multipart/form-data" method="post">
+<form id="enroll_form" asp-action="Index" enctype="multipart/form-data" method="post">
     <!-- Validation summary here -->
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -57,6 +57,7 @@
             <label asp-for="Phone" class="form-label"></label>
             <input asp-for="Phone" class="form-control" />
             <span asp-validation-for="Phone" class="text-danger"></span>
+            <button type="button" class="btn btn-outline-primary mt-2" onclick="openOtpModal()">Verify Phone Number via WhatsApp</button>
         </div>
 
         <div class="col-md-6">
@@ -90,7 +91,7 @@
         </div>
 
         <div class="col-12 mt-3">
-            <button type="submit" class="btn btn-success">Submit Enrollment</button>
+            <button type="submit" id="submitBtn" class="btn btn-success">Submit Enrollment</button>
         </div>
     </div>
 </form>
@@ -98,4 +99,11 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script>
+function otpVerified(phone) {
+  // e.g., enable form submit
+  document.getElementById("submitBtn").disabled = false;
+}
+</script>
+
 

@@ -6,3 +6,19 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var user = HttpContextAccessor.HttpContext.User;
+    var isAdmin = user.Identity.IsAuthenticated && user.IsInRole("admin");
+}
+
+@if (isAdmin)
+{
+    <div class="text-end mt-3 me-3">
+        <a href="/Admin/PendingApproval" class="btn btn-outline-success">Go to Admin Page</a>
+    </div>
+}

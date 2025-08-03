@@ -9,4 +9,5 @@ public class MipWebContext : DbContext
 
     public DbSet<Student> Students { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<OtpVerification> OtpVerifications { get; set; } = null!;
 }

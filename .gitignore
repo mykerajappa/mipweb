@@ -1,9 +1,42 @@
+# .NET build artifacts
 bin/
 obj/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.db-shm
+*.db-wal
+
+# Rider / JetBrains IDE
+.idea/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# ASP.NET Secret settings
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.secrets.json
+
+# User-specific files
 *.user
 *.suo
+
+# SQLite database (only if it's local dev DB and not production seed)
 *.db
-.vs/
-appsettings.Development.json
-appsettings.Production.json
-.env
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Mac / Linux system files
+.DS_Store
+Thumbs.db
+
+# Test Results
+TestResults/
+*.TestResults.xml

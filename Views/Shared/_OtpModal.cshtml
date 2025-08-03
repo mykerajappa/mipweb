@@ -1,0 +1,17 @@
+<!-- OTP Modal -->
+<div class="modal fade" id="otpModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <h5>Verify Phone Number</h5>
+      <div class="mb-2">
+        <input type="text" class="form-control" id="otpPhone" placeholder="Enter 10-digit phone number">
+      </div>
+      <div class="mb-2 d-flex">
+        <button id="sendOtpBtn" onclick="sendOtp()" class="btn btn-primary me-2">Send OTP</button>
+        <input type="text" class="form-control" id="otpInput" placeholder="Enter OTP">
+        <button onclick="verifyOtp()" class="btn btn-success ms-2">Verify</button>
+      </div>
+      <div id="otpStatus" class="text-danger mt-2"></div>
+    </div>
+  </div>
+</div>

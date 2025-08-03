@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MipWeb.Data;
 
@@ -10,9 +11,11 @@ using MipWeb.Data;
 namespace MipWeb.Migrations
 {
     [DbContext(typeof(MipWebContext))]
-    partial class MipWebContextModelSnapshot : ModelSnapshot
+    [Migration("20250802095141_AddOtpVerificationTable")]
+    partial class AddOtpVerificationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
@@ -24,9 +27,6 @@ namespace MipWeb.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsVerified")
@@ -66,9 +66,6 @@ namespace MipWeb.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsApproved")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsPhoneVerified")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsWhatsAppVerified")

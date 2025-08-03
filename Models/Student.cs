@@ -19,4 +19,6 @@ public class Student
     public string PhotoFilePath { get; set; } = string.Empty;
 
     public DateTime EnrollmentDate { get; set; } = DateTime.Now;
+    public bool IsPhoneVerified { get; set; }
+
 }

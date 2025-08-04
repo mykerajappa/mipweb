@@ -34,7 +34,10 @@ namespace MipWeb.Controllers
         }
 
         [HttpGet("Ping")]
-        public IActionResult Ping() => Ok("OtpController is reachable");
+        public IActionResult Ping()
+        {
+            return Ok(_whatsAppService.SendOtp("+919789066269", "123456"));
+        }
 
         [HttpPost("SendOtp")]
         public async Task<IActionResult> SendOtp([FromBody] OtpRequestModel model)

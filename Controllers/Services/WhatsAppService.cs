@@ -1,57 +1,62 @@
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
-namespace MipWeb.Services;
-
-public class WhatsAppService
+namespace MipWeb.Services
 {
-    private readonly HttpClient _client;
-    private readonly string _phoneNumberId = "your_phone_number_id";
-    private readonly string _accessToken = "your_access_token";
-
-    public WhatsAppService(HttpClient client)
+    public class WhatsAppService
     {
-        _client = client;
-    }
+        private readonly HttpClient _httpClient;
+        private readonly string _accessToken;
+        private readonly string _phoneNumberId;
+        private readonly string _apiVersion;
 
-    public async Task<bool> SendOtp(string phoneNumber, string otp)
-    {
-        var payload = new
+        public WhatsAppService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
-            messaging_product = "whatsapp",
-            to = phoneNumber,
-            type = "template",
-            template = new
+            _httpClient = httpClientFactory.CreateClient();
+            _accessToken = configuration["WhatsApp:AccessToken"];
+            _phoneNumberId = configuration["WhatsApp:PhoneNumberId"];
+            _apiVersion = configuration["WhatsApp:ApiVersion"];
+        }
+
+        public async Task<bool> SendOtp(string phoneNumber, string otpCode)
+        {
+            var url = $"https://graph.facebook.com/{_apiVersion}/{_phoneNumberId}/messages";
+
+            var payload = new
             {
-                name = "your_template_name",
-                language = new { code = "en_US" },
-                components = new[]
+                messaging_product = "whatsapp",
+                to = phoneNumber,
+                type = "template",
+                template = new
                 {
-                    new
+                    name = "otp_template", // use your approved template name
+                    language = new { code = "en_US" },
+                    components = new[]
                     {
-                        type = "body",
-                        parameters = new[]
+                        new
                         {
-                            new { type = "text", text = otp }
+                            type = "body",
+                            parameters = new[]
+                            {
+                                new { type = "text", text = otpCode }
+                            }
                         }
                     }
                 }
-            }
-        };
+            };
 
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
+            var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
+            };
 
-        var request = new HttpRequestMessage(HttpMethod.Post,
-            $"https://graph.facebook.com/v19.0/{_phoneNumberId}/messages");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
 
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
-        request.Content = new StringContent(JsonSerializer.Serialize(payload, options), Encoding.UTF8, "application/json");
-
-        var response = await _client.SendAsync(request);
-        return response.IsSuccessStatusCode;
+            var response = await _httpClient.SendAsync(request);
+            return response.IsSuccessStatusCode;
+        }
     }
 }

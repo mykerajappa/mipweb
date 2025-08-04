@@ -55,6 +55,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<WhatsAppService>(); 
+builder.Services.AddSingleton<WhatsAppService>();
 
 var app = builder.Build();
 

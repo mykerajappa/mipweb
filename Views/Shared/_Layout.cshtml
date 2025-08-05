@@ -39,7 +39,7 @@
 
                         @{
                             var user = HttpContextAccessor.HttpContext.User;
-                            var isAdmin = user.Identity.IsAuthenticated && user.IsInRole("Admin");
+                            var isAdmin = user.Identity.IsAuthenticated && user.IsInRole(AppRoles.Admin);
                         }
                         @if (isAdmin)
                         {

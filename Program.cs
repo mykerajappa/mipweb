@@ -101,7 +101,7 @@ using (var scope = app.Services.CreateScope())
         {
             Username = "admin",
             PasswordHash = hashedPassword,
-            Role = "Admin"
+            Role = AppRoles.Admin
         });
         db.SaveChanges();
         Console.WriteLine("✅ Default admin user created: username='admin', password='admin123'");

@@ -37,18 +37,24 @@
                         @{
                             var user = HttpContextAccessor.HttpContext.User;
                         
-                            if(user.Identity.IsAuthenticated){
-                                if (user.IsInRole(AppRoles.Admin))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
-                                    </li>
-                                }
+                            if(user.Identity.IsAuthenticated && user.IsInRole(AppRoles.Admin))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact Us</a>
+                            </li>
+
+                            @if(user.Identity.IsAuthenticated)
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogOut">LogOut</a>
                                 </li>
                             }
-                            else {
+                            else 
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                                 </li>

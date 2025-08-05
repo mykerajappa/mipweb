@@ -28,9 +28,6 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Enrollment" asp-action="Index">Enroll</a>
                         </li>
                         @using Microsoft.AspNetCore.Authorization
@@ -39,19 +36,23 @@
 
                         @{
                             var user = HttpContextAccessor.HttpContext.User;
-                            var isAdmin = user.Identity.IsAuthenticated && user.IsInRole(AppRoles.Admin);
-                        }
-                        @if (isAdmin)
-                        {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="PendingApproval">Admin</a>
-                        </li>
-                        }
-                        else
-                        {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                        </li>
+                        
+                            if(user.Identity.IsAuthenticated){
+                                if (user.IsInRole(AppRoles.Admin))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                    </li>
+                                }
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogOut">LogOut</a>
+                                </li>
+                            }
+                            else {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
@@ -64,6 +65,34 @@
         </main>
     </div>
 
+    <div class="modal fade" id="consentModal" tabindex="-1" aria-labelledby="consentModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="consentModalLabel">Please Accept Our Policies</h5>
+            </div>
+            <div class="modal-body">
+                <p>To continue using this site, you need to agree to the following:</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="modalAgreePrivacy">
+                    <label class="form-check-label" for="modalAgreePrivacy">
+                        I agree to the <a href="/Home/Privacy" target="_blank">Privacy Policy</a>.
+                    </label>
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="modalAgreeTerms">
+                    <label class="form-check-label" for="modalAgreeTerms">
+                        I agree to the <a href="/Home/Terms" target="_blank">Terms & Conditions</a>.
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="acceptConsentBtn" type="button" class="btn btn-primary" disabled>Accept & Continue</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - MipWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -73,6 +102,37 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/OtpModal.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = new bootstrap.Modal(document.getElementById("consentModal"));
+            const btn = document.getElementById("acceptConsentBtn");
+            const privacyCheckbox = document.getElementById("modalAgreePrivacy");
+            const termsCheckbox = document.getElementById("modalAgreeTerms");
+
+            function checkConsent() {
+                btn.disabled = !(privacyCheckbox.checked && termsCheckbox.checked);
+            }
+
+            const path = window.location.pathname.toLowerCase();
+
+            const isConsentPage = path.includes("/privacy") || path.includes("/terms");
+
+            if (!localStorage.getItem("cookiesAccepted") && !isConsentPage) {
+                modal.show();
+            }
+
+            privacyCheckbox.addEventListener("change", checkConsent);
+            termsCheckbox.addEventListener("change", checkConsent);
+
+            btn.addEventListener("click", function () {
+                if (privacyCheckbox.checked && termsCheckbox.checked) {
+                    localStorage.setItem("cookiesAccepted", "true");
+                    modal.hide();
+                }
+            });
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

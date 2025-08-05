@@ -32,7 +32,7 @@ public class LoginController : Controller
         var identity = new ClaimsIdentity(claims, "login");
         await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
 
-        return RedirectToAction("PendingApproval", "Admin");
+        return RedirectToAction("Index", "Admin");
     }
 
     public async Task<IActionResult> Logout()

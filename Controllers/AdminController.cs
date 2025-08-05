@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MipWeb.Data;
 using MipWeb.Models;
 
@@ -31,6 +32,8 @@ public class AdminController : Controller
             .ToListAsync();
         return View(students);
     }
+
+    public IActionResult Index() => View();
 
     [HttpPost]
     public async Task<IActionResult> ApproveStudent(int id)

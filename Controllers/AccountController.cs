@@ -36,7 +36,7 @@ public class AccountController : Controller
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync("MipAuth", new ClaimsPrincipal(identity));
 
-            return RedirectToAction("PendingApproval", "Admin");
+            return RedirectToAction("Index", "Admin");
         }
 
         ViewBag.Error = "Invalid login";
@@ -45,7 +45,7 @@ public class AccountController : Controller
 
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignOutAsync("MipAuth");
         return RedirectToAction("Login");
     }
 }

@@ -1,0 +1,96 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h2 class="mb-4">🎛️ Admin Dashboard</h2>
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    <!-- User & Role Management -->
+    <div class="col">
+        <div class="card h-100 shadow">
+            <div class="card-header bg-primary text-white">🔐 User & Role Management</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="/User" class="text-decoration-none">User Management</a></li>
+                    <li><a href="/Roles/Assign" class="text-decoration-none">Assign Roles</a></li>
+                    <li><a href="/Roles/AuditLog" class="text-decoration-none">Role Change Audit</a></li>
+                    <li><a href="/Roles/Permissions" class="text-decoration-none">Roles & Permissions</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Management -->
+    <div class="col">
+        <div class="card h-100 shadow">
+            <div class="card-header bg-success text-white">👥 Student Management</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="/Student/Enroll" class="text-decoration-none">Enroll Student</a></li>
+                    <li><a href="/Student/Pending" class="text-decoration-none">Pending Approvals</a></li>
+                    <li><a href="/Student/Discontinued" class="text-decoration-none">Discontinued Students</a></li>
+                    <li><a href="/Student/Reactivate" class="text-decoration-none">Reactivate Student</a></li>
+                    <li><a href="/Fee/Manage" class="text-decoration-none">Fee Management</a></li>
+                    <li><a href="/Fee/Reminder" class="text-decoration-none">Send Fee Reminder</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch & Schedule -->
+    <div class="col">
+        <div class="card h-100 shadow">
+            <div class="card-header bg-warning text-dark">🗓️ Batches & Classes</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="/Batch" class="text-decoration-none">Batch Management</a></li>
+                    <li><a href="/Class/Cancellations" class="text-decoration-none">Class Reschedule / Cancel</a></li>
+                    <li><a href="/Calendar/View" class="text-decoration-none">Session Calendar</a></li>
+                    <li><a href="/Session/Log" class="text-decoration-none">Session Details</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subject Management -->
+    <div class="col">
+        <div class="card h-100 shadow">
+            <div class="card-header bg-secondary text-white">📚 Subject Management</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="/Subjects" class="text-decoration-none">Manage Subjects</a></li>
+                    <li><a href="/Subjects/Batches" class="text-decoration-none">Subject-wise Batches</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Integration -->
+    <div class="col">
+        <div class="card h-100 shadow">
+            <div class="card-header bg-info text-white">💬 WhatsApp Communication</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="/WhatsApp/Test" class="text-decoration-none">Send Test Message</a></li>
+                    <li><a href="/WhatsApp/Templates" class="text-decoration-none">Manage Templates</a></li>
+                    <li><a href="/WhatsApp/Logs" class="text-decoration-none">Message Logs</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financials -->
+    <div class="col">
+        <div class="card h-100 shadow">
+            <div class="card-header bg-dark text-white">💸 Finance</div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="/Expense" class="text-decoration-none">Expense Management</a></li>
+                    <li><a href="/Partners" class="text-decoration-none">Partner Contributions</a></li>
+                    <li><a href="/Reports/ProfitLoss" class="text-decoration-none">Profit / Loss Reports</a></li>
+                    <li><a href="/Dashboard" class="text-decoration-none">Dashboard</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

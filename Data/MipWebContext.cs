@@ -13,6 +13,8 @@ public class MipWebContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; } = null!;
     public DbSet<OtpVerification> OtpVerifications { get; set; } = null!;
     public DbSet<ContactMessage> ContactMessages { get; set; }
+    public DbSet<ExpenseCategory> ExpenseCategories { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,12 +33,22 @@ public class MipWebContext : DbContext
             .HasOne(ur => ur.Role)
             .WithMany(r => r.UserRoles)
             .HasForeignKey(ur => ur.RoleId);
+
+        modelBuilder.Entity<ExpenseCategory>().HasData(
+            new ExpenseCategory { ExpenseCategoryID = 1, CategoryName = "Other", IsActive = true }
+        );
     }
 
     internal IQueryable<User> GetUsersWithRoles()
     {
         return Users.Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role);
+    }
+
+    internal IQueryable<User> GetPartners()
+    {
+        return GetUsersWithRoles()
+            .Where(u => u.UserRoles.Any(r => r.Role.Name == AppRoles.Partner));
     }
 }
    

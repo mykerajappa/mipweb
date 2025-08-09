@@ -1,0 +1,139 @@
+@using MipWeb.Models;
+
+@model Expense
+@{
+    ViewBag.Title = "Add Expense";
+}
+
+<h2>Add Expense</h2>
+<div class="mb-3 text-end">
+    <a asp-action="Index" asp-controller="Expense" class="btn btn-secondary">
+        View Expenses
+    </a>
+</div>
+
+<form asp-action="Create" method="post">
+
+    <div class="mb-3">
+        <label for="ExpenseDate" class="form-label">Date</label>
+        <input asp-for="ExpenseDate" type="date" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label for="CategoryID" class="form-label">Category</label>
+        <div class="input-group">
+            <select asp-for="CategoryID" class="form-select">
+                @foreach (var c in ViewBag.Categories)
+                {
+                    <option value="@c.ExpenseCategoryID">@c.CategoryName</option>
+                }
+            </select>
+            <button type="button" class="btn btn-outline-secondary" id="addCategoryBtn">+</button>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="Description" class="form-label">Description</label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Amount" class="form-label">Amount</label>
+        <input asp-for="Amount" type="number" step="0.01" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label for="PartnerUserID" class="form-label">Paid By</label>
+        <select asp-for="PartnerUserID" class="form-select">
+            <option value="">School Funds</option>
+            @foreach (var p in ViewBag.Partners)
+            {
+                <option value="@p.Id">@p.Name</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="alert alert-success">
+            @ViewBag.SuccessMessage
+        </div>
+    }
+</form>
+
+<!-- Modal for adding category -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="newCategoryName" class="form-control" placeholder="Category name" />
+            </div>
+            <div class="modal-footer">
+                <button type="submit" id="saveCategoryBtn" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // When modal opens, focus on the textbox
+    $('#addCategoryModal').on('shown.bs.modal', function () {
+        $('#NewCategoryName').trigger('focus');
+    });
+
+    // When modal is hidden, clear the textbox
+    $('#addCategoryModal').on('hidden.bs.modal', function () {
+        $('#NewCategoryName').val('');
+    });
+
+    // Handle save click or Enter key
+    $('#btnSaveCategory').on('click', function () {
+        $('#formAddCategory').submit();
+    });
+
+    // Allow Enter key to submit form
+    $('#formAddCategory').on('keypress', function (e) {
+        if (e.which === 13) { // Enter key
+            e.preventDefault();
+            $('#formAddCategory').submit();
+        }
+    });
+
+    // Add category modal
+    document.getElementById("addCategoryBtn").addEventListener("click", function () {
+        new bootstrap.Modal(document.getElementById('categoryModal')).show();
+    });
+
+    // Save new category via AJAX
+    document.getElementById("saveCategoryBtn").addEventListener("click", function () {
+        let name = document.getElementById("newCategoryName").value;
+        fetch('@Url.Action("AddCategory", "Expense")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'categoryName=' + encodeURIComponent(name)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                let select = document.querySelector("select[name='CategoryID']");
+                let option = document.createElement("option");
+                option.value = data.categoryId;
+                option.text = data.categoryName;
+                select.appendChild(option);
+                select.value = data.categoryId;
+                bootstrap.Modal.getInstance(document.getElementById('categoryModal')).hide();
+            } else {
+                alert(data.message);
+            }
+        });
+    });
+</script>
+}

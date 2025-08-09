@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MipWeb.Data;
 
@@ -10,9 +11,11 @@ using MipWeb.Data;
 namespace MipWeb.Migrations
 {
     [DbContext(typeof(MipWebContext))]
-    partial class MipWebContextModelSnapshot : ModelSnapshot
+    [Migration("20250809183047_ExpenseMgmt_FK")]
+    partial class ExpenseMgmt_FK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.7");
@@ -69,6 +72,9 @@ namespace MipWeb.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CreatedByUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -83,7 +89,7 @@ namespace MipWeb.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.HasIndex("CreatedBy");
+                    b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("PartnerUserID");
 
@@ -282,7 +288,7 @@ namespace MipWeb.Migrations
 
                     b.HasOne("MipWeb.Models.User", "CreatedByUser")
                         .WithMany()
-                        .HasForeignKey("CreatedBy")
+                        .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

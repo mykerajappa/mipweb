@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using MipWeb.Models; // or your namespace
+using MipWeb.ViewModels;
 using MipWeb.Data;   // for AppDbContext
 using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 public class AccountController : Controller
 {
@@ -24,14 +26,19 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(string username, string password)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Username == username);
+        var user = _context.Users
+                    .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                    .FirstOrDefault(u => u.Username == username);
+
         if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
+                new Claim(ClaimTypes.Name, user.Username)            };
+
+            foreach (var ur in user.UserRoles)
+                claims.Add(new Claim(ClaimTypes.Role, ur.Role.Name));
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync("MipAuth", new ClaimsPrincipal(identity));

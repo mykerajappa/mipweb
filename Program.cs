@@ -92,19 +92,57 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<MipWebContext>();
     db.Database.Migrate();
+    db.Database.EnsureCreated();
+
+    // Seed Roles
+    if (!db.Roles.Any())
+    {
+        var roles = new[]
+        {
+            new Role { Name = "Admin", Description = "System administrator" },
+            new Role { Name = "Faculty", Description = "Faculty member" },
+            new Role { Name = "Partner", Description = "Partner of Marutham Isai Palli" }
+        };
+
+        db.Roles.AddRange(roles);
+        db.SaveChanges();
+    }
 
     // Seed admin user if not exists
-    if (!db.Users.Any(u => u.Username == "admin"))
+        var adminUserId = "admin";
+    if (!db.Users.Any(u => u.Username == adminUserId))
     {
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword("admin123");
         db.Users.Add(new User
         {
-            Username = "admin",
+            Username = adminUserId,
             PasswordHash = hashedPassword,
-            Role = AppRoles.Admin
+            Email = "maruthamisaipalli@gmail.com",
+            IsActive = true,
+            Name = "Administrator",
+            WhatsAppNumber = "9789066079"
         });
         db.SaveChanges();
         Console.WriteLine("✅ Default admin user created: username='admin', password='admin123'");
+    }
+
+    // Seed default admin user
+    var admin = db.Users.Include(u => u.UserRoles).FirstOrDefault(u => u.Username == adminUserId);
+
+    if (admin != null)
+    {
+        var adminRole = db.Roles.First(r => r.Name == AppRoles.Admin);
+
+        if (!admin.UserRoles.Any(ur => ur.RoleId == adminRole.Id))
+        {
+            db.UserRoles.Add(new UserRole
+            {
+                UserId = admin.Id,
+                RoleId = adminRole.Id
+            });
+
+            db.SaveChanges();
+        }
     }
 }
 

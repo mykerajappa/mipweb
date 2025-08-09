@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="container mt-4">
+    <h2>User Management</h2>
+    <button class="btn btn-primary mb-3" id="btnAddUser">
+        <i class="bi bi-plus-lg"></i> Add New User
+    </button>
+
+    <div id="userTableContainer">
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p>Loading users...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal placeholder -->
+<div id="userModalContainer"></div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(function () {
+            loadUserTable();
+
+            $('#btnAddUser').on('click', function () {
+                $.get('/User/Create', function (html) {
+                    $('#userModalContainer').html(html);
+                    $('#userModal').modal('show');
+                });
+            });
+        });
+
+        function loadUserTable() {
+            $.get('/User/UserListPartial', function (html) {
+                $('#userTableContainer').html(html);
+            });
+        }
+
+        function editUser(id) {
+            $.get('/User/Edit/' + id, function (html) {
+                $('#userModalContainer').html(html);
+                $('#userModal').modal('show');
+            });
+        }
+
+        function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                $.post('/User/Delete', { id: id }, function () {
+                    loadUserTable();
+                });
+            }
+        }
+
+        function deactivateUser(id) {
+            if (confirm('Deactivate this user?')) {
+                $.post('/User/Deactivate', { id: id }, function () {
+                    loadUserTable();
+                });
+            }
+        }
+
+        function resetPassword(id) {
+            if (confirm('Reset password for this user?')) {
+                $.post('/User/ResetPassword', { id: id }, function () {
+                    alert('New password has been sent via WhatsApp.');
+                });
+            }
+        }
+
+        function submitUserForm() {
+            var $form = $('#userForm');
+            var $modalBody = $('#userModal .modal-body');
+
+            if ($form.valid()) {
+                $('#modalSpinner').show();
+
+                $.ajax({
+                    url: $form.attr('action'),
+                    method: 'POST',
+                    data: $form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#userModal').modal('hide');
+                            loadUserTable();
+                        } else {
+                            $modalBody.html(response);
+                        }
+                    },
+                    error: function () {
+                        alert('Error saving user.');
+                    },
+                    complete: function () {
+                        $('#modalSpinner').hide();
+                    }
+                });
+            }
+        }
+    </script>
+}

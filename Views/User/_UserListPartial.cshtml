@@ -1,0 +1,43 @@
+@model List<MipWeb.ViewModels.UserViewModel>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Name</th>
+            <th>User ID</th>
+            <th>Email</th>
+            <th>WhatsApp</th>
+            <th>Roles</th>
+            <th>Status</th>
+            <th style="width: 160px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.UserId</td>
+                <td>@user.Email</td>
+                <td>@user.WhatsappNumber</td>
+                <td>@string.Join(", ", user.SelectedRoles)</td>
+                <td>
+                    @if (user.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick="editUser(@user.Id)">✏️</button>
+                    <button class="btn btn-sm btn-warning" onclick="deactivateUser(@user.Id)">🚫</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteUser(@user.Id)">🗑️</button>
+                    <button class="btn btn-sm btn-info" onclick="resetPassword(@user.Id)">🔒</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

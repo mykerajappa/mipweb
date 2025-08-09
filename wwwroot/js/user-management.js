@@ -1,5 +1,11 @@
 $(document).ready(function () {
 
+    $(document).on('ajaxStart', function () {
+        $('#spinner').removeClass('d-none');
+    }).on('ajaxStop', function () {
+        $('#spinner').addClass('d-none');
+    });
+
     $.ajaxSetup({
         headers: {
             'RequestVerificationToken': $('meta[name="csrf-token"]').attr('content')

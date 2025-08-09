@@ -32,4 +32,11 @@ public class MipWebContext : DbContext
             .WithMany(r => r.UserRoles)
             .HasForeignKey(ur => ur.RoleId);
     }
+
+    internal IQueryable<User> GetUsersWithRoles()
+    {
+        return Users.Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role);
+    }
 }
+   

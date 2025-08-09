@@ -29,10 +29,7 @@ namespace MipWeb.Controllers
         // Partial: list users
         public IActionResult UserListPartial()
         {
-            var users = _context.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-                .ToList();
+            var users = _context.GetUsersWithRoles().ToList();
 
             return PartialView("_UserListPartial", users);
         }
@@ -50,10 +47,7 @@ namespace MipWeb.Controllers
         // Edit user modal (GET)
         public IActionResult Edit(int id)
         {
-            var user = _context.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-                .FirstOrDefault(u => u.Id == id);
+            var user = _context.GetUsersWithRoles().FirstOrDefault(u => u.Id == id);
 
             if (user == null) return NotFound();
 
@@ -107,10 +101,7 @@ namespace MipWeb.Controllers
             else
             {
                 // Update existing
-                var user = _context.Users
-                    .Include(u => u.UserRoles)
-                    .ThenInclude(ur => ur.Role)
-                    .FirstOrDefault(u => u.Id == model.Id);
+                var user = _context.GetUsersWithRoles().FirstOrDefault(u => u.Id == model.Id);
 
                 if (user == null) return NotFound();
 

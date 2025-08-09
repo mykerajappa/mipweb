@@ -26,16 +26,15 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(string username, string password)
     {
-        var user = _context.Users
-                    .Include(u => u.UserRoles)
-                    .ThenInclude(ur => ur.Role)
+        var user = _context.GetUsersWithRoles()
                     .FirstOrDefault(u => u.Username == username);
 
         if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username)            };
+                new Claim(ClaimTypes.Name, user.Username)
+            };
 
             foreach (var ur in user.UserRoles)
                 claims.Add(new Claim(ClaimTypes.Role, ur.Role.Name));

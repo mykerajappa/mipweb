@@ -31,12 +31,17 @@ public class ExpenseController : Controller
     // GET: Expense List
     public IActionResult Index(int? month, int? year, int? categoryId, int? partnerUserId)
     {
-        // Default to current month/year if not provided
-        if (!month.HasValue || !year.HasValue)
+        // If nothing passed in (first load), default to current month/year
+        if (!month.HasValue && !year.HasValue)
         {
             month = DateTime.Now.Month;
             year = DateTime.Now.Year;
         }
+
+        ViewBag.SelectedMonth = month ?? 0;
+        ViewBag.SelectedYear = year ?? 0;
+        ViewBag.SelectedPartner = partnerUserId ?? 0;
+        ViewBag.SelectedCategory = categoryId ?? 0;
 
         var query = _context.Expenses
             .Include(e => e.Category)
@@ -44,13 +49,15 @@ public class ExpenseController : Controller
             .Include(e => e.CreatedByUser)
             .AsQueryable();
 
-        if (month.HasValue && year.HasValue)
-            query = query.Where(e => e.ExpenseDate.Month == month && e.ExpenseDate.Year == year);
+        if (month.HasValue && month.Value > 0)
+            query = query.Where(e => e.ExpenseDate.Month == month);
+        if (year.HasValue && year.Value > 0)
+            query = query.Where(e => e.ExpenseDate.Year == year);
 
         if (categoryId.HasValue && categoryId.Value > 0)
             query = query.Where(e => e.CategoryID == categoryId);
 
-        if (partnerUserId.HasValue)
+        if (partnerUserId.HasValue && partnerUserId > 0)
             query = query.Where(e => e.PartnerUser.Id == partnerUserId);
 
         var expenses = query
@@ -62,8 +69,11 @@ public class ExpenseController : Controller
         ViewBag.Partners = _context.Users
             .Where(u => u.UserRoles.Any(r => r.Role.Name == AppRoles.Partner))
             .ToList();
+
         ViewBag.SelectedMonth = month;
         ViewBag.SelectedYear = year;
+        ViewBag.SelectedPartner = partnerUserId;
+        ViewBag.SelectedCategory = categoryId;
 
         return View(expenses);
     }

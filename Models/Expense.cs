@@ -16,8 +16,9 @@ public class Expense
     public int ExpenseID { get; set; }
     public DateTime ExpenseDate { get; set; }
     public int CategoryID { get; set; }
-    public string Description { get; set; }
+    public string? Description { get; set; }
     public decimal Amount { get; set; }
+    public string ModeOfPayment { get; set; }
     public int? PartnerUserID { get; set; } // null = school funds
     public int CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

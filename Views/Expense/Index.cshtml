@@ -47,10 +47,14 @@
             <option value="">All</option>
             @for (int m = 1; m <= 12; m++)
             {
-                var selected = (ViewBag.SelectedMonth != null && (int)ViewBag.SelectedMonth == m) ? "selected" : "";
-@removeTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-                <option value="@m" selected="@selected">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)</option>
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+                var selected = (ViewBag.SelectedMonth != null && (int)ViewBag.SelectedMonth == m);
+                if(selected)    {
+                    <option value="@m" selected>@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)</option>
+                }
+                else    {
+                    <option value="@m">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)</option>
+                }    
+                
             }
         </select>
     </div>
@@ -61,10 +65,13 @@
             <option value="">All</option>
             @for (int y = DateTime.Now.Year; y >= DateTime.Now.Year - 5; y--)
             {
-                var isSelected = (ViewBag.SelectedYear != null && (int)ViewBag.SelectedYear == y) ? "selected" : "";
-@removeTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-                <option value="@y" selected="@isSelected">@y</option>
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+                var isSelected = (ViewBag.SelectedYear != null && (int)ViewBag.SelectedYear == y);
+                if(isSelected)  {
+                    <option value="@y" selected>@y</option>
+                }
+                else   {
+                    <option value="@y">@y</option>
+                }
             }
         </select>
     </div>
@@ -75,7 +82,13 @@
             <option value="">All</option>
             @foreach (var c in ViewBag.Categories)
             {
-                <option value="@c.ExpenseCategoryID">@c.CategoryName</option>
+                var isSelected = (ViewBag.SelectedCategory != null && (int)ViewBag.SelectedCategory == c.ExpenseCategoryID);
+                if(isSelected)  {
+                    <option value="@c.ExpenseCategoryID" selected>@c.CategoryName</option>
+                }
+                else{
+                    <option value="@c.ExpenseCategoryID">@c.CategoryName</option>
+                }
             }
         </select>
     </div>
@@ -86,7 +99,13 @@
             <option value="">All</option>
             @foreach (var p in ViewBag.Partners)
             {
-                <option value="@p.Id">@p.Name</option>
+                var isSelected = (ViewBag.SelectedPartner != null && (int)ViewBag.SelectedPartner == p.Id);
+                if(isSelected)  {
+                    <option value="@p.Id" selected>@p.Name</option>
+                }
+                else    {
+                    <option value="@p.Id">@p.Name</option>
+                }
             }
         </select>
     </div>
@@ -103,6 +122,7 @@
             <th>Category</th>
             <th>Description</th>
             <th>Amount</th>
+            <th>Payment Mode</th>
             <th>Paid By</th>
             <th>Entered By</th>
             <th>Entered At</th>
@@ -116,6 +136,7 @@
                 <td>@e.Category?.CategoryName</td>
                 <td>@e.Description</td>
                 <td class="text-end amount-col">@e.Amount.ToString("0.00")</td>
+                <td>@e.ModeOfPayment</td>
                 <td>@(e.PartnerUser?.Name ?? "School Funds")</td>
                 <td>@e.CreatedByUser?.Name</td>
                 <td>@e.CreatedAt.ToString("dd-MMM-yyyy HH:mm")</td>

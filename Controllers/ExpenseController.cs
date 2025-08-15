@@ -38,6 +38,10 @@ public class ExpenseController : Controller
             year = DateTime.Now.Year;
         }
 
+        // Case 2: Explicitly passed "All" (0) → keep it as 0
+        ViewBag.SelectedMonth = month ?? 0;
+        ViewBag.SelectedYear = year ?? 0;
+
         ViewBag.SelectedMonth = month ?? 0;
         ViewBag.SelectedYear = year ?? 0;
         ViewBag.SelectedPartner = partnerUserId ?? 0;

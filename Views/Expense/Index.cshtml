@@ -44,7 +44,7 @@
     <div class="col-md-2">
         <label class="form-label">Month</label>
         <select name="month" class="form-select" as>
-            <option value="">All</option>
+            <option value="0">All</option>
             @for (int m = 1; m <= 12; m++)
             {
                 var selected = (ViewBag.SelectedMonth != null && (int)ViewBag.SelectedMonth == m);
@@ -62,7 +62,7 @@
     <div class="col-md-2">
         <label class="form-label">Year</label>
         <select name="year" class="form-select">
-            <option value="">All</option>
+            <option value="0">All</option>
             @for (int y = DateTime.Now.Year; y >= DateTime.Now.Year - 5; y--)
             {
                 var isSelected = (ViewBag.SelectedYear != null && (int)ViewBag.SelectedYear == y);
